@@ -42,7 +42,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state);
 
 const char *argp_program_version = "mkaffs " VERSION;
 
-static char args_doc[] = "devicefile name";
+static char args_doc[] = "devicefile [name]";
 
 static struct argp_option argo[] = {
 	{ "verbose",	'v',	0,		0,	"Be verbose" },
@@ -67,7 +67,7 @@ typedef int error_t;
 
 static void argp_usage(struct argp_state *state)
 {
-	fprintf(stderr,"Usage: mkaffs [-void] [-b root] [-s blocksize] [-r reserved] devicefile name\n");
+	fprintf(stderr,"Usage: mkaffs [-void] [-b root] [-s blocksize] [-r reserved] devicefile [name]\n");
 	exit(1);
 }
 #endif
@@ -123,7 +123,7 @@ static error_t parse_opt(int key, char *arg, struct argp_state *state)
 			argp_usage(state);
 		break;
 	case ARGP_KEY_END:
-		if (state->arg_num != 2)
+		if (state->arg_num != 1 && state->arg_num != 2)
 			argp_usage(state);
 	default:
 		return ARGP_ERR_UNKNOWN;
@@ -146,6 +146,7 @@ int main(int argc, char **argv)
 	info.reserved = 2;
 	info.blocksize = 512;
 	info.blockshift = 9;
+	info.name = "AffS";
 
 #if HAVE_ARGP_H
 	if (argp_parse(&argp, argc, argv, 0, 0, &info))
@@ -190,6 +191,7 @@ int main(int argc, char **argv)
 
 	affs_init_root();
 
+	printf("name: %s\n", info.name);
 	printf("blocks: %d\n", info.blocks);
 	printf("blocksize: %d\n", info.blocksize);
 	printf("reserved blocks: %d\n", info.reserved);
