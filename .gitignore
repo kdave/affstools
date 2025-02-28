@@ -9,4 +9,6 @@
 /*.o
 
 /mkaffs
+/mkfs.affs
 /affsck
+/fsck.affs

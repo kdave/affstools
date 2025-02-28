@@ -88,7 +88,8 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-sbin_PROGRAMS = affsck$(EXEEXT) mkaffs$(EXEEXT)
+sbin_PROGRAMS = affsck$(EXEEXT) mkaffs$(EXEEXT) fsck.affs$(EXEEXT) \
+	mkfs.affs$(EXEEXT)
 subdir = .
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -108,10 +109,18 @@ am_affsck_OBJECTS = affsck.$(OBJEXT) buffer.$(OBJEXT) bitmap.$(OBJEXT) \
 	inode.$(OBJEXT) util.$(OBJEXT)
 affsck_OBJECTS = $(am_affsck_OBJECTS)
 affsck_LDADD = $(LDADD)
+am_fsck_affs_OBJECTS = affsck.$(OBJEXT) buffer.$(OBJEXT) \
+	bitmap.$(OBJEXT) inode.$(OBJEXT) util.$(OBJEXT)
+fsck_affs_OBJECTS = $(am_fsck_affs_OBJECTS)
+fsck_affs_LDADD = $(LDADD)
 am_mkaffs_OBJECTS = mkaffs.$(OBJEXT) buffer.$(OBJEXT) bitmap.$(OBJEXT) \
 	inode.$(OBJEXT) util.$(OBJEXT)
 mkaffs_OBJECTS = $(am_mkaffs_OBJECTS)
 mkaffs_LDADD = $(LDADD)
+am_mkfs_affs_OBJECTS = mkaffs.$(OBJEXT) buffer.$(OBJEXT) \
+	bitmap.$(OBJEXT) inode.$(OBJEXT) util.$(OBJEXT)
+mkfs_affs_OBJECTS = $(am_mkfs_affs_OBJECTS)
+mkfs_affs_LDADD = $(LDADD)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -143,8 +152,10 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(affsck_SOURCES) $(mkaffs_SOURCES)
-DIST_SOURCES = $(affsck_SOURCES) $(mkaffs_SOURCES)
+SOURCES = $(affsck_SOURCES) $(fsck_affs_SOURCES) $(mkaffs_SOURCES) \
+	$(mkfs_affs_SOURCES)
+DIST_SOURCES = $(affsck_SOURCES) $(fsck_affs_SOURCES) \
+	$(mkaffs_SOURCES) $(mkfs_affs_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -291,6 +302,8 @@ top_srcdir = @top_srcdir@
 AUTOMAKE_OPTIONS = foreign
 affsck_SOURCES = affsck.c buffer.c bitmap.c inode.c util.c amigaffs.h affs_config.h
 mkaffs_SOURCES = mkaffs.c buffer.c bitmap.c inode.c util.c amigaffs.h affs_config.h
+fsck_affs_SOURCES = affsck.c buffer.c bitmap.c inode.c util.c amigaffs.h affs_config.h
+mkfs_affs_SOURCES = mkaffs.c buffer.c bitmap.c inode.c util.c amigaffs.h affs_config.h
 all: config.h
 	$(MAKE) $(AM_MAKEFLAGS) all-am
 
@@ -391,9 +404,17 @@ affsck$(EXEEXT): $(affsck_OBJECTS) $(affsck_DEPENDENCIES) $(EXTRA_affsck_DEPENDE
 	@rm -f affsck$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(affsck_OBJECTS) $(affsck_LDADD) $(LIBS)
 
+fsck.affs$(EXEEXT): $(fsck_affs_OBJECTS) $(fsck_affs_DEPENDENCIES) $(EXTRA_fsck_affs_DEPENDENCIES) 
+	@rm -f fsck.affs$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(fsck_affs_OBJECTS) $(fsck_affs_LDADD) $(LIBS)
+
 mkaffs$(EXEEXT): $(mkaffs_OBJECTS) $(mkaffs_DEPENDENCIES) $(EXTRA_mkaffs_DEPENDENCIES) 
 	@rm -f mkaffs$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(mkaffs_OBJECTS) $(mkaffs_LDADD) $(LIBS)
+
+mkfs.affs$(EXEEXT): $(mkfs_affs_OBJECTS) $(mkfs_affs_DEPENDENCIES) $(EXTRA_mkfs_affs_DEPENDENCIES) 
+	@rm -f mkfs.affs$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(mkfs_affs_OBJECTS) $(mkfs_affs_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
